@@ -1,9 +1,6 @@
 package com.example.usermanagement.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 
 import com.example.usermanagement.dto.PageResponse;
 import com.example.usermanagement.dto.UserRequest;
