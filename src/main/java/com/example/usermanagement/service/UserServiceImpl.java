@@ -1,0 +1,76 @@
+package com.example.usermanagement.service;
+
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import com.example.usermanagement.dto.UserRequest;
+import com.example.usermanagement.dto.UserResponse;
+import com.example.usermanagement.entity.User;
+import com.example.usermanagement.exception.ResourceNotFoundException;
+import com.example.usermanagement.repository.UserRepository;
+
+@Service
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserResponse create(UserRequest userRequest) {
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        User user = new User(userRequest.getName(), userRequest.getEmail());
+        User savedUser = userRepository.save(user);
+
+        return new UserResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
+    }
+
+    @Override
+    public Page<UserResponse> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(this::map);
+    }
+
+    @Override
+    public UserResponse getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return map(user);
+    }
+
+    @Override
+    public UserResponse update(Long id, UserRequest userRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        return map(userRepository.save(user));
+    }
+
+    @Override
+    public void delete(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
+
+    private UserResponse map(User user) {
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
+    }
+
+    @Override
+    public List<UserResponse> getAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+    }
+
+    @Override
+    public List<UserResponse> getAll(
+            org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable pageable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+    }
+}
