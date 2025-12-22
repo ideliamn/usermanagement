@@ -1,8 +1,5 @@
 package com.example.usermanagement.controller;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -20,9 +17,12 @@ import com.example.usermanagement.dto.UserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 
+@Tag(name = "Users", description = "User management APIs")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -32,27 +32,32 @@ public class UserController {
         this.service = service;
     }
 
+    @Operation(summary = "Create new user")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@Valid @RequestBody UserRequest request) {
         return service.create(request);
     }
 
+    @Operation(summary = "Get users with pagination & sorting")
     @GetMapping
     public PageResponse<UserResponse> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
         return service.getAll(pageable);
     }
 
+    @Operation(summary = "Get one user by ID")
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
+    @Operation(summary = "Update user data")
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest param) {
         return service.update(id, param);
     }
 
+    @Operation(summary = "Delete user by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

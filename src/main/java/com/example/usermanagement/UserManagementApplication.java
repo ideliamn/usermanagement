@@ -10,15 +10,6 @@ import com.example.usermanagement.dto.ApiResponse;
 @SpringBootApplication
 public class UserManagementApplication {
 
-	@RestController
-	public class HelloController {
-
-		@GetMapping("/hello")
-		public ApiResponse<String> hello() {
-			return ApiResponse.success();
-		}
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(UserManagementApplication.class, args);
 	}
