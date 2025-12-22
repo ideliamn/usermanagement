@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.usermanagement.dto.PageResponse;
 import com.example.usermanagement.dto.UserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.service.UserService;
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<UserResponse> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+    public PageResponse<UserResponse> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
         return service.getAll(pageable);
     }
 

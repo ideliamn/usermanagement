@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
+import com.example.usermanagement.dto.PageResponse;
 import com.example.usermanagement.dto.UserRequest;
 import com.example.usermanagement.dto.UserResponse;
 
@@ -17,5 +18,5 @@ public interface UserService {
 
     void delete(Long id);
 
-    Page<UserResponse> getAll(Pageable pageable);
+    PageResponse<UserResponse> getAll(Pageable pageable);
 }

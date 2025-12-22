@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.example.usermanagement.dto.PageMeta;
+import com.example.usermanagement.dto.PageResponse;
 import com.example.usermanagement.dto.UserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.entity.User;
@@ -33,8 +35,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(this::map);
+    public PageResponse<UserResponse> getAll(Pageable pageable) {
+        Page<User> page = userRepository.findAll(pageable);
+        List<UserResponse> data = page.getContent().stream().map(this::map).toList();
+        PageMeta meta = new PageMeta(page.getNumber() + 1, page.getSize(), page.getNumberOfElements(),
+                page.getTotalPages());
+        return new PageResponse<>(data, meta);
     }
 
     @Override
