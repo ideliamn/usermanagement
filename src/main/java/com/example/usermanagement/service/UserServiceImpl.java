@@ -60,17 +60,4 @@ public class UserServiceImpl implements UserService {
     private UserResponse map(User user) {
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
-
-    @Override
-    public List<UserResponse> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
-
-    @Override
-    public List<UserResponse> getAll(
-            org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
 }

@@ -2,6 +2,9 @@ package com.example.usermanagement.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +38,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getAll() {
-        return service.getAll();
+    public Page<UserResponse> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+        return service.getAll(pageable);
     }
 
     @GetMapping("/{id}")
