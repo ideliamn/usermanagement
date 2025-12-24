@@ -63,6 +63,12 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    public PageResponse<UserResponse> search(String keyword, Pageable pageable) {
+        Page<User> page = userRepository
+                .findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
+        return PageResponse.from(page.map(this::map));
+    }
+
     private UserResponse map(User user) {
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }

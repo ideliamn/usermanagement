@@ -16,4 +16,6 @@ public interface UserService {
     void delete(Long id);
 
     PageResponse<UserResponse> getAll(Pageable pageable);
+
+    PageResponse<UserResponse> search(String keyword, Pageable pageable);
 }
