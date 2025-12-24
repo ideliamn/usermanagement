@@ -1,6 +1,8 @@
 package com.example.usermanagement.controller;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,21 +42,30 @@ public class UserController {
         return service.create(request);
     }
 
-    @Operation(summary = "Get users with pagination & sorting")
+    @Operation(summary = "Get users with search, pagination & sorting")
     @GetMapping
-    public PageResponse<UserResponse> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
-        return service.getAll(pageable);
+    public PageResponse<UserResponse> getAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page must start from 1");
+        }
+
+        Pageable pageable = PageRequest.of(
+                page - 1,
+                size,
+                Sort.by(Sort.Direction.fromString(direction), sort));
+
+        return service.search(search, pageable);
     }
 
     @Operation(summary = "Get one user by ID")
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable Long id) {
         return service.getById(id);
-    }
-
-    @GetMapping("/search")
-    public PageResponse<UserResponse> search(@RequestParam String keyword, Pageable pageable) {
-        return service.search(keyword, pageable);
     }
 
     @Operation(summary = "Update user data")

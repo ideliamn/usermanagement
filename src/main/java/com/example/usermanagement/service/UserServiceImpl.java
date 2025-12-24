@@ -35,15 +35,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<UserResponse> getAll(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
-        List<UserResponse> data = page.getContent().stream().map(this::map).toList();
-        PageMeta meta = new PageMeta(page.getNumber() + 1, page.getSize(), page.getNumberOfElements(),
-                page.getTotalPages());
-        return new PageResponse<>(data, meta);
-    }
-
-    @Override
     public UserResponse getById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return map(user);
@@ -64,9 +55,20 @@ public class UserServiceImpl implements UserService {
     }
 
     public PageResponse<UserResponse> search(String keyword, Pageable pageable) {
-        Page<User> page = userRepository
-                .findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
-        return PageResponse.from(page.map(this::map));
+        Page<User> page;
+
+        if (keyword == null || keyword.isBlank()) {
+            page = userRepository.findAll(pageable);
+        } else {
+            page = userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
+        }
+        List<UserResponse> data = page.getContent().stream().map(this::map).toList();
+        PageMeta meta = new PageMeta(
+                page.getNumber() + 1,
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
+        return new PageResponse<>(data, meta);
     }
 
     private UserResponse map(User user) {
